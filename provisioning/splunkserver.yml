@@ -1,0 +1,27 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: ensure packages required are installed
+      yum: pkg={{ item }} state=latest
+      with_items:
+        - libaio
+        - bc
+        - flex
+        - unzip
+        - python
+    - name: create Splunk user
+      user: name=splunk uid=506 home=/home/splunk state=present
+    - name: extract Splunk Enterprise
+      command: tar zxf /vagrant/splunk/splunk-6.2.6-274160-Linux-x86_64.tgz
+      args:
+        chdir: /usr/local
+        creates: /usr/local/splunk
+    - name: set Splunk shell env
+      shell: echo '. /usr/local/splunk/bin/setSplunkEnv' >> /usr/local/splunk/.bash_profile
+    - name: set ip tables
+      shell: iptables -I INPUT 5 -p tcp -j ACCEPT --dport 8000
+    - name: start splunk server
+      shell: su splunk -c "/usr/local/splunk/bin/splunk start --accept-license --answer-yes"
+    - name: enable Splunk boot init script
+      command: /usr/local/splunk/bin/splunk enable boot-start -user splunk
