@@ -13,7 +13,7 @@
     - name: create Splunk user
       user: name=splunk uid=506 home=/home/splunk state=present
     - name: extract Splunk Enterprise
-      command: tar zxf /vagrant/splunk/splunk-6.2.6-274160-Linux-x86_64.tgz
+      command: tar zxf /vagrant/splunk/Splunk-Latest.tgz
       args:
         chdir: /usr/local
         creates: /usr/local/splunk
