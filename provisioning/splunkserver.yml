@@ -11,17 +11,30 @@
         - unzip
         - python
     - name: create Splunk user
-      user: name=splunk uid=1000 home=/home/splunk state=present
+      user: name=splunk uid=1001 home=/home/splunk state=present
+    - name: Download Splunk Enterpise
+       get_url:
+           url: https://www.splunk.com/page/download_track?file=6.6.3/linux/splunk-6.6.3-e21ee54bc796-    Linux-x86_64.tgz&ac=&wget=true&name=wget&platform=Linux&architecture=x86_64&version=6.6.3&product=spl    unk&typed=release
+           checksum: md5:32898cdc3f4f35f7b4d8340736caa509
+           dest: /vagrant/splunk/Splunk.tgz
     - name: extract Splunk Enterprise
-      command: tar zxf /vagrant/splunk/Splunk-Latest.tgz
-      args:
-        chdir: /usr/local
-        creates: /usr/local/splunk
+      unarchive:
+        src: /vagrant/splunk/Splunk.tgz
+        remote_src: yes
+        dest: /usr/local
+        owner: splunk
+        creates: /usr/local/splunk/README-splunk.txt
+    - name: set Splunk free disk space
+      shell: echo '
+          [diskUsage]
+          minFreeSpace = 500' >> /usr/local/splunk/etc/system/local/server.conf
     - name: set Splunk shell env
       shell: echo '. /usr/local/splunk/bin/setSplunkEnv' >> /home/splunk/.bash_profile
       become_user: splunk
-    - name: set ip tables
+    - name: set iptables
       shell: iptables -I INPUT 5 -p tcp -j ACCEPT --dport 8000
+    - name: save iptables
+      shell: iptables-save >| /etc/sysconfig/iptables
     - name: start splunk server
       shell:  "/usr/local/splunk/bin/splunk start --accept-license --answer-yes"
       become_user: splunk
