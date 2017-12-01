@@ -13,13 +13,13 @@
     - name: create Splunk user
       user: name=splunk uid=1001 home=/home/splunk state=present
     - name: Download Splunk Enterpise
-       get_url:
-           url: https://www.splunk.com/page/download_track?file=6.6.3/linux/splunk-6.6.3-e21ee54bc796-    Linux-x86_64.tgz&ac=&wget=true&name=wget&platform=Linux&architecture=x86_64&version=6.6.3&product=spl    unk&typed=release
-           checksum: md5:32898cdc3f4f35f7b4d8340736caa509
-           dest: /vagrant/splunk/Splunk.tgz
+      get_url:
+        url: https://www.splunk.com/page/download_track?file=6.6.4/linux/splunk-6.6.4-00895e76d346-Linux-x86_64.tgz&ac=&wget=true&name=wget&platform=Linux&architecture=x86_64&version=6.6.4&product=splunk&typed=release
+        checksum: md5:d037446f73bc4759444c323517ccf398
+        dest: /vagrant/Splunk.tgz
     - name: extract Splunk Enterprise
       unarchive:
-        src: /vagrant/splunk/Splunk.tgz
+        src: /vagrant/Splunk.tgz
         remote_src: yes
         dest: /usr/local
         owner: splunk
@@ -32,7 +32,7 @@
       shell: echo '. /usr/local/splunk/bin/setSplunkEnv' >> /home/splunk/.bash_profile
       become_user: splunk
     - name: set iptables
-      shell: iptables -I INPUT 5 -p tcp -j ACCEPT --dport 8000
+      shell: iptables -A INPUT -p tcp -j ACCEPT --dport 8000
     - name: save iptables
       shell: iptables-save >| /etc/sysconfig/iptables
     - name: start splunk server
