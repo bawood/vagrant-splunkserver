@@ -6,5 +6,6 @@
   * vagrant-vbguest - https://github.com/dotless-de/vagrant-vbguest
   * Ansible - http://docs.ansible.com/ansible/latest/intro_installation.html#installing-the-control-machine
   2. ```git clone https://github.com/bawood/vagrant-splunkserver```
-  3. ```cd vagrant-splunkserver && vagrant up```
- 4. wait & then point your browser at http://localhost:8088
+  3. edit password field in vagrant-splunkserver/provisioning/files/user-seed.conf and then  
+    ```cd vagrant-splunkserver && vagrant up```
+  4. wait & then point your browser at http://localhost:8088
