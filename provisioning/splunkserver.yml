@@ -14,8 +14,8 @@
       user: name=splunk uid=1001 home=/home/splunk state=present
     - name: Download Splunk Enterpise
       get_url:
-        url: https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.1.3&product=splunk&filename=splunk-7.1.3-51d9cac7b837-Linux-x86_64.tgz&wget=true
-        checksum: md5:341cd96cc18794c8d34ec644b016ec5d
+        url: https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.2.3&product=splunk&filename=splunk-7.2.3-06d57c595b80-Linux-x86_64.tgz&wget=true
+        checksum: md5:ac6f332dc37845e5d68516233cf8dc8e
         dest: /vagrant/Splunk.tgz
     - name: extract Splunk Enterprise
       unarchive:
@@ -28,6 +28,11 @@
       shell: echo '
           [diskUsage]
           minFreeSpace = 500' >> /usr/local/splunk/etc/system/local/server.conf
+    - name: setup admin user
+      copy:
+          src: user-seed.conf
+          dest: /usr/local/splunk/etc/system/local/user-seed.conf
+          owner: splunk
     - name: set Splunk shell env
       shell: echo '. /usr/local/splunk/bin/setSplunkEnv' >> /home/splunk/.bash_profile
       become_user: splunk
